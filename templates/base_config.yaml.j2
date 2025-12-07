@@ -1,0 +1,32 @@
+job: extension
+config:
+  name: {{ output_name }}
+  process:
+  - type: diffusion_trainer
+    training_folder: /root/ai-toolkit/output
+    sqlite_db_path: /root/ai-toolkit/aitk_db.db
+    device: cuda
+
+    save:
+      dtype: bf16
+      save_every: 250
+      max_step_saves_to_keep: 4
+      save_format: diffusers
+
+    datasets:
+    - folder_path: {{ dataset_path }}
+      caption_ext: txt
+      resolution: [1024]
+
+    train:
+      batch_size: {{ batch_size }}
+      steps: {{ steps }}
+      lr: {{ lr }}
+
+    model:
+      name_or_path: {{ model_path }}
+      arch: zimage:turbo
+
+meta:
+  name: {{ output_name }}
+  version: '1.0'
