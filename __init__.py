@@ -1,46 +1,33 @@
-# __init__.py — 正确加载所有节点
+# __init__.py — Safe Version (recommended)
 
-# 导入节点模块
-from .dataset_node import NODE_CLASS_MAPPINGS as DATASET_NODES, NODE_DISPLAY_NAME_MAPPINGS as DATASET_DISPLAY
-from .model_node import NODE_CLASS_MAPPINGS as MODEL_NODES, NODE_DISPLAY_NAME_MAPPINGS as MODEL_DISPLAY
-from .config_node import NODE_CLASS_MAPPINGS as CONFIG_NODES, NODE_DISPLAY_NAME_MAPPINGS as CONFIG_DISPLAY
-from .trainer_node import NODE_CLASS_MAPPINGS as TRAINER_NODES, NODE_DISPLAY_NAME_MAPPINGS as TRAINER_DISPLAY
+# ---- Import all node classes safely ----
+# Each node module MUST define a class e.g. AiTKDatasetNode, etc.
 
+from .dataset_node import AiTKDatasetNode
+from .model_node import AiTKModelSelectNode
+from .config_node import AiTKConfigNode
+from .trainer_node import AiTKTrainerNode
 from .dummy_output_node import AiTKDummyOutputNode
 from .log_viewer_node import AiTKLogViewerNode
 
 
-# ---------------------------
-# 合并所有节点
-# ---------------------------
-NODE_CLASS_MAPPINGS = {}
-
-# AiTK 自己的两个额外节点
-NODE_CLASS_MAPPINGS.update({
+# ---- Register classes here ----
+NODE_CLASS_MAPPINGS = {
+    "AiTKDatasetNode": AiTKDatasetNode,
+    "AiTKModelSelectNode": AiTKModelSelectNode,
+    "AiTKConfigNode": AiTKConfigNode,
+    "AiTKTrainerNode": AiTKTrainerNode,
     "AiTKDummyOutputNode": AiTKDummyOutputNode,
     "AiTKLogViewerNode": AiTKLogViewerNode,
-})
+}
 
-# 其他 4 个主节点
-NODE_CLASS_MAPPINGS.update(DATASET_NODES)
-NODE_CLASS_MAPPINGS.update(MODEL_NODES)
-NODE_CLASS_MAPPINGS.update(CONFIG_NODES)
-NODE_CLASS_MAPPINGS.update(TRAINER_NODES)
-
-
-# ---------------------------
-# Display Names
-# ---------------------------
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "AiTKDatasetNode": "AiTK Dataset Loader",
+    "AiTKModelSelectNode": "AiTK Model Selector",
+    "AiTKConfigNode": "AiTK Training Config",
+    "AiTKTrainerNode": "AiTK Trainer",
     "AiTKDummyOutputNode": "AiTK Dummy Output",
     "AiTKLogViewerNode": "AiTK Log Viewer",
 }
 
-NODE_DISPLAY_NAME_MAPPINGS.update(DATASET_DISPLAY)
-NODE_DISPLAY_NAME_MAPPINGS.update(MODEL_DISPLAY)
-NODE_DISPLAY_NAME_MAPPINGS.update(CONFIG_DISPLAY)
-NODE_DISPLAY_NAME_MAPPINGS.update(TRAINER_DISPLAY)
-
-
-# 对外导出
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
