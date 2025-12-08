@@ -5,7 +5,7 @@
 
 from .dataset_node import AiTKDatasetNode
 from .model_node import AiTKModelSelectNode
-from .config_node import AiTKConfigNode
+from .config_node import AiTKTrainConfigNode
 from .trainer_node import AiTKTrainerNode
 from .dummy_output_node import AiTKDummyOutputNode
 from .log_viewer_node import AiTKLogViewerNode
@@ -15,7 +15,7 @@ from .log_viewer_node import AiTKLogViewerNode
 NODE_CLASS_MAPPINGS = {
     "AiTKDatasetNode": AiTKDatasetNode,
     "AiTKModelSelectNode": AiTKModelSelectNode,
-    "AiTKConfigNode": AiTKConfigNode,
+    "AiTKTrainConfigNode": AiTKTrainConfigNode,
     "AiTKTrainerNode": AiTKTrainerNode,
     "AiTKDummyOutputNode": AiTKDummyOutputNode,
     "AiTKLogViewerNode": AiTKLogViewerNode,
@@ -24,7 +24,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "AiTKDatasetNode": "AiTK Dataset Loader",
     "AiTKModelSelectNode": "AiTK Model Selector",
-    "AiTKConfigNode": "AiTK Training Config",
+    "AiTKTrainConfigNode": "AiTK Training Config",
     "AiTKTrainerNode": "AiTK Trainer",
     "AiTKDummyOutputNode": "AiTK Dummy Output",
     "AiTKLogViewerNode": "AiTK Log Viewer",
