@@ -7,12 +7,6 @@ config:
     sqlite_db_path: /root/ai-toolkit/aitk_db.db
     device: cuda
 
-    save:
-      dtype: bf16
-      save_every: 250
-      max_step_saves_to_keep: 4
-      save_format: diffusers
-
     datasets:
     - folder_path: {{ dataset_path }}
       caption_ext: txt
@@ -25,8 +19,9 @@ config:
 
     model:
       name_or_path: {{ model_path }}
+      assistant_lora_path: {{ assistant_lora }}
       arch: zimage:turbo
 
 meta:
   name: {{ output_name }}
-  version: '1.0'
+  version: "1.0"

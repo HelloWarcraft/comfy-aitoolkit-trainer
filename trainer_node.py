@@ -1,53 +1,71 @@
 import subprocess
-import yaml
 import os
 from jinja2 import Template
+import threading
+import time
 
-class AiToolkitTrainerNode:
+class AiTKTrainerNode:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
-                "model_path": ("STRING", {"default": "/root/models/Z-Image-Turbo"}),
-                "dataset_path": ("STRING", {"default": "/root/ai-toolkit/datasets/zimage1_impastohero1"}),
-                "output_name": ("STRING", {"default": "zimage1-test"}),
-                "steps": ("INT", {"default": 1500, "min": 1}),
-                "batch_size": ("INT", {"default": 16, "min": 1}),
-                "lr": ("FLOAT", {"default": 1e-4}),
+                "dataset_path": ("STRING", {}),
+                "model_path": ("STRING", {}),
+                "assistant_lora": ("STRING", {}),
+                "output_name": ("STRING", {}),
+                "steps": ("INT", {}),
+                "batch_size": ("INT", {}),
+                "lr": ("FLOAT", {}),
             }
         }
 
-    RETURN_TYPES = ("STRING",)
+    RETURN_TYPES = ("STRING", "STRING")  # config_path, log_path
     FUNCTION = "run_training"
-    CATEGORY = "ai-toolkit"
+    CATEGORY = "ai-toolkit/train"
 
-    def run_training(self, model_path, dataset_path, output_name, steps, batch_size, lr):
+    def run_training(self, dataset_path, model_path, assistant_lora,
+                     output_name, steps, batch_size, lr):
 
+        # Load template
         template_path = os.path.join(os.path.dirname(__file__), "templates/base_config.yaml.j2")
         with open(template_path, "r") as f:
             template = Template(f.read())
 
-        # 渲染 config
+        # Render config
         rendered_yaml = template.render(
-            model_path=model_path,
             dataset_path=dataset_path,
+            model_path=model_path,
+            assistant_lora=assistant_lora,
+            output_name=output_name,
             steps=steps,
             batch_size=batch_size,
-            lr=lr,
-            output_name=output_name
+            lr=lr
         )
 
-        # 保存 config
-        output_config_path = f"/root/ai-toolkit/config/{output_name}.yaml"
-        with open(output_config_path, "w") as f:
+        # Write config file
+        config_path = f"/root/ai-toolkit/config/{output_name}.yaml"
+        with open(config_path, "w") as f:
             f.write(rendered_yaml)
 
-        # 调用训练
-        cmd = ["python", "/root/ai-toolkit/run.py", output_config_path]
-        subprocess.Popen(cmd)
+        # Log file
+        log_path = f"/root/ai-toolkit/output/logs/{output_name}.log"
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-        return (f"Training started: {output_config_path}", )
+        # Run training
+        def run_and_log():
+            with open(log_path, "w") as log:
+                process = subprocess.Popen(
+                    ["python", "/root/ai-toolkit/run.py", config_path],
+                    stdout=log,
+                    stderr=log
+                )
+                process.wait()
+
+        threading.Thread(target=run_and_log, daemon=True).start()
+
+        return (config_path, log_path)
+
 
 NODE_CLASS_MAPPINGS = {
-    "AiToolkitTrainerNode": AiToolkitTrainerNode
+    "AiTKTrainerNode": AiTKTrainerNode
 }
